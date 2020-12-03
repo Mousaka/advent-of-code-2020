@@ -4,7 +4,6 @@ solvePartTwo(Solution):-
     open('map.txt',read,Str),
     read_TreeIndexes(Str,TreeIndexes, Width),
     close(Str),
-    % write((Width,TreeIndexesWithEnd)),
     steps(Width,TreeIndexes,1,1,S1),
     steps(Width,TreeIndexes,3,1,S2),
     steps(Width,TreeIndexes,5,1,S3),
@@ -25,12 +24,9 @@ stepHelper(Width,[H|T], StepsRight,StepsDown,Index,Count, Res):-
     stepHelper(Width,NextTreeIndexes,StepsRight,StepsDown,NextIndex,NextCount,Res).
 
 
-countTree(L,Index,Count):-
-    member(Index,L),
-    Count is 1.
-countTree(_,_,Count):-
-    Count is 0.
-
+countTree(L,Index,1):-
+    member(Index,L).
+countTree(_,_,0).
 moveX(Width,StepsRight,Index,NextIndex):-
     NextIndex is mod(Index + StepsRight, Width).
 
