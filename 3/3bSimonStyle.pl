@@ -1,5 +1,6 @@
 %Part two Simon style.
 
+
 solvePartTwo(Solution):-
     open('map.txt',read,Str),
     read_TreeIndexes(Str,TreeIndexes, Width),
@@ -10,6 +11,15 @@ solvePartTwo(Solution):-
     steps(Width,TreeIndexes,7,1,S4),
     steps(Width,TreeIndexes,1,2,S5),
     Solution is S1 * S2 * S3 * S4 * S5.
+
+% Can also be used if you "know" the Count but want to know what kind of Tree setup would give that count:
+% ?- steps(3,[[0,1,2],[X,2],Y],1,1,2).
+% X = 1,
+% Y = [2|_1618] 
+% 
+% or
+% ?- steps(3,TreeSetup,1,1,2).
+% TreeSetup = [_4332, [1|_4364], [2|_4400]] 
 
 steps(Width,[H|T],StepsRight,StepsDown,Count):-
     dropRows([H|T],StepsDown,NextTreeIndexes),
