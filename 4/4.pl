@@ -10,7 +10,7 @@ nl_putback, `\n` --> `\n`.
 twonl--> `\n\n`.
 
 part(P) -->
-    string(P),`:`, (string(_);`#`), (nspace;nl_putback). 
+    string(P),`:`, (string(_)), (nspace;nl_putback). 
 
 parts([]) --> twonl.
 parts([]) --> at_end.
