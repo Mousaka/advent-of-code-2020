@@ -2,7 +2,6 @@
 :- use_module(library(dcg/basics)).
 :- use_module(library(clpfd)).
 :- use_module(library(pure_input)).
-:- use_module((reif)).
 % set_prolog_flag(double_quotes, chars).
 
 solve(M,Input):-
