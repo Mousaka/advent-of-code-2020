@@ -40,16 +40,20 @@ bin_decimal(B,D):-
     number_codes(D,['0'|['b'|B]]).
 
 
-% Part 2
+% --- Part Two ---
 
 solvePart2FromFile(S):-
     phrase_from_file(seat_codes(T), 'input'),
-    gap_seat(S,T).
+    your_seat_seats(S,T).
 
-gap_seat(S,Seats):-
-    Splus #= S + 1,
-    Sminus #= S - 1,
-    write(Splus),write(o),write(Sminus),nl,
-    member(Sminus,Seats),
-    \+ member(S,Seats),
-    member(Splus,Seats).
+% Ding! The "fasten seat belt" signs have turned on. Time to find your seat.
+% It's a completely full flight, so your seat should be the only missing boarding pass in your list. However, there's a catch: some of the seats at the very front and back of the plane don't exist on this aircraft, so they'll be missing from your list as well.
+% Your seat wasn't at the very front or back, though; the seats with IDs +1 and -1 from yours will be in your list.
+% What is the ID of your seat?
+
+your_seat_seats(YourSeat,Seats):-    % --- This predicate describes the relationship between your seat and the list of seats
+    YourSeatPlusOne #= YourSeat + 1, % --- "the seats with IDs +1 and -1 from yours
+    YourSeatMinusOne #= YourSeat - 1,%
+    member(YourSeatMinusOne,Seats),  %      will be in your list."
+    member(YourSeatPlusOne,Seats),   % ---
+    \+ member(YourSeat,Seats).       % --- "It's a completely full flight, so your seat should be the only missing boarding pass in your list.""
