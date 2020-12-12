@@ -60,18 +60,77 @@ solvePart1(C):-
         C #= Ones * Threes.
 
 
+% Part2.
+:- use_module(library(ordsets)).
 
-adaptify2(UnsortedAdapters,Comb):-
-        list_max(UnsortedAdapters,Max),
-        Last #= Max + 3,
-        sort([Last|UnsortedAdapters],Adapters),
-        % chain(#<, Adapters),
-        adaptify2(Adapters,0,Comb).
-adaptify2([],_,0,0).
-adaptify2([Adapter|T],Prev,Comb):-
-        Diff #= (Adapter - Prev),
-        (Diff #= 1;
-                Diff #= 3),
-        Comb = Comb0
-        adaptify2(T,Adapter,Comb0).
+distance_constraint(A,B):-
+        D #= B - A,
+        if_(D #= 1,
+                true,
+        if_(D #= 3, true, false)).
+distance_constraint2(A,B):-
+        D #= B - A,
+        (D #= 1; D = 3).
+
+all_follow_dc([],_).
+all_follow_dc([Max],Max).
+all_follow_dc([A,B|T],Max):-
+        distance_constraint(A,B),
+        all_follow_dc([B|T],Max).
+
+adapters_working(UnorderedAdapters,Fixed):-
+        list_max(UnorderedAdapters,Max),
+        % list_to_ord_set(UnorderedAdaptersUnorderedAdapters,AllAdapters),
+        reverse([0|_], RSubAdapters),
+        reverse([Max|RSubAdapters],Fixed),
         
+        subset(Fixed, [0|UnorderedAdapters]).
+
+        
+
+       
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   Reified predicates for use with predicates from library(reif).
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#=(X, Y, T) :-
+        X #= Y #<==> B,
+        zo_t(B, T).
+
+#<(X, Y, T) :-
+        X #< Y #<==> B,
+        zo_t(B, T).
+
+zo_t(0, false).
+zo_t(1, true).
+
+       
+
+
+
+% Inspired by
+% https://stackoverflow.com/a/30207770
+
+
+subset([X],Ys):-
+      selectd(X,Ys,_).  
+subset([X,X1|Xs], Ys) :-
+   selectd(X, Ys, Zs),
+   selectd(X1, Zs, _),
+   distance_constraint(X,X1),
+   subset(Xs, Zs).
+
+
+equal_elementsBB(Xs,Ys) :-
+        same_length(Xs,Ys),
+        equal_elementsB(Xs,Ys).
+
+
+equal_elementsB([], []).
+equal_elementsB([X|Xs], Ys) :-
+   selectd(X, Ys, Zs),
+   equal_elementsB(Xs, Zs).
+
+selectd(E,[A|As],Bs1) :-
+        if_(A = E, As = Bs1, 
+                   (Bs1 = [A|Bs], selectd(E,As,Bs))).
