@@ -57,3 +57,7 @@ your_seat_seats(YourSeat,Seats):-    % --- This predicate describes the relation
     member(YourSeatMinusOne,Seats),  %      will be in your list."
     member(YourSeatPlusOne,Seats),   % ---
     \+ member(YourSeat,Seats).       % --- "It's a completely full flight, so your seat should be the only missing boarding pass in your list.""
+
+% Add some constraints to generate a list of seat given your seat insted like such:
+% length(T,L),L #< 15,all_distinct(T),chain(T,#<), maplist(#<(0),T),maplist(#>(15),T), your_seat_seats(10,T),label(T).
+% length(T,L),L #= 13,all_distinct(T),chain(T,#<), maplist(#<(0),T),maplist(#>(15),T), your_seat_seats(10,T),label(T).
