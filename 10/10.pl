@@ -63,28 +63,54 @@ solvePart1(C):-
 % Part2.
 :- use_module(library(ordsets)).
 
-distance_constraint(A,B):-
-        D #= B - A,
-        if_(D #= 1,
-                true,
-        if_(D #= 3, true, false)).
-distance_constraint2(A,B):-
-        D #= B - A,
-        (D #= 1; D = 3).
 
-all_follow_dc([],_).
-all_follow_dc([Max],Max).
-all_follow_dc([A,B|T],Max):-
-        distance_constraint(A,B),
-        all_follow_dc([B|T],Max).
+% distance_constraint(A,B):-
+%         D #= B - A,
+%         if_(D #= 1,
+%                 true,
+%         if_(D #= 3, true, false)).
+% distance_constraint2(A,B):-
+%         D #= B - A,
+%         (D #= 1; D = 3).
 
-adapters_working(UnorderedAdapters,Fixed):-
-        list_max(UnorderedAdapters,Max),
-        % list_to_ord_set(UnorderedAdaptersUnorderedAdapters,AllAdapters),
-        reverse([0|_], RSubAdapters),
-        reverse([Max|RSubAdapters],Fixed),
-        
-        subset(Fixed, [0|UnorderedAdapters]).
+% all_follow_dc([],_).
+% all_follow_dc([Max],Max).
+% all_follow_dc([A,B|T],Max):-
+%         distance_constraint(A,B),
+%         all_follow_dc([B|T],Max).
+
+
+or(A,B,D):-
+        D = \/(A,B).
+
+list_domain(Ns,D):-
+        % What is a better default than 0? 0 happens to work for this problem
+        foldl(or,Ns,0,D).
+
+% At some point I think this was working but it was too slow.
+% How to make it more efficient?
+adapters_working(Max,N,AllAdapters,Adapters):-
+        % length(AllAdapters, UL),
+        N0 #=< N,
+        N0 #>= 1,
+        length(Adapters,N0),
+        all_distinct(Adapters),
+        list_domain(AllAdapters,D),
+        Adapters ins D,
+        % AllAdapters ins 0..Max,
+        chain(#<,Adapters),
+        safe_adapters(Adapters),
+        memberchk(Max,Adapters),
+        memberchk(0,Adapters).
+        % length(Adapters,SL),
+        % SL #=< UL,
+        % all_follow_dc(Adapters,10).
+
+safe_adapters([_]).
+safe_adapters([A1,A2|As]):-
+        Diff #= A2 - A1,
+        (Diff #= 1; Diff #= 3) -> !,
+         safe_adapters([A2|As]).
 
         
 
